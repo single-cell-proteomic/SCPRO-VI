@@ -1,6 +1,6 @@
 # SCPRO-VI
 
-**SCPRO-VI: Structure-aware Cell Embedding for Protein and RNA-based Multi-Omics Data Integration**
+**Explainable Graph Learning for Multimodal Single-Cell Data Integration**
 
 > **Preprint**: [bioRxiv, 2024.12.06.627151v1](https://www.biorxiv.org/content/10.1101/2024.12.06.627151v1)
 
@@ -19,7 +19,6 @@ Clone the repository and install dependencies using:
 ```bash
 git clone https://github.com/YOUR_USERNAME/SCPRO-VI.git
 cd SCPRO-VI
-pip install -r requirements.txt
 ```
 
 You will need Python ≥ 3.8 with GPU support (for PyTorch and CuPy). Dependencies include:
@@ -29,16 +28,7 @@ You will need Python ≥ 3.8 with GPU support (for PyTorch and CuPy). Dependenci
 
 ---
 
-## 📁 Repository Structure
 
-```bash
-├── SCPRO_VI_Github.ipynb        # Main usage notebook
-├── Matching.py                  # Cell-cell graph construction
-├── scPROMO.py                   # Main training and integration pipeline
-├── Models/                      # (Expected) neural model definitions
-├── Data/                        # Place for raw input data and PPI info
-└── README.md                    # This file
-```
 
 ---
 
@@ -63,28 +53,22 @@ Place the `.h5ad` file (combined RNA+protein) in the `Data/` directory, and ensu
 from scPROMO import load_data
 
 data_path = "Data/dataset_name.h5ad"
-scmo = load_data(data_path, sub_sample=True, load=False)
+scmo = load_data(data_path, sub_sample=False, load=False)
 
 # Optional cleaning
-scmo.filter_cells_by_feature_count("all", k=500)
-scmo.filter_features_by_cell_count("all", k=500)
+scmo.filter_cells_by_feature_count("all", k=10)
+scmo.filter_features_by_cell_count("all", k=250)
 scmo.min_max_scale()
 ```
 
-3. **Graph Construction**
-
-```python
-from Matching import built_graphs
-built_graphs(scmo)
-```
 
 4. **Run SCPRO-VI**
 
 ```python
 from scPROMO import VI
-from types import SimpleNamespace
+from scPROMO import Namespace
 
-args = SimpleNamespace(
+args = Namespace(
     latent_dim=100,
     hidden_dim=256,
     num_neighbors=[15],
@@ -121,8 +105,8 @@ VI.totalVI(scmo, args)    # TotalVI integration
 
 ## 📊 Output
 
-- Cell embeddings: `adata.obsm["SCPRO-VI"]`
-- Graphs: `adata.uns["rna_edges"]`, `adata.uns["prot_edges"]`, and `.obsm["cell_similarity"]`
+- Cell embeddings: `scmo.whole.obsm["SCPRO-VI"]`
+- Graphs: `scmo.whole.uns["rna_edges"]`, `scmo.whole.uns["prot_edges"]`, and `scmo.whole.obsm["cell_similarity"]`
 
 These can be used for downstream clustering, trajectory inference, and visualization.
 
@@ -134,8 +118,8 @@ If you use SCPRO-VI in your research, please cite:
 
 ```bibtex
 @article{SCPROVI2024,
-  title={SCPRO-VI: Structure-aware Cell Embedding for Protein and RNA-based Multi-Omics Data Integration},
-  author={Your Name and Others},
+  title={Explainable Graph Learning for Multimodal Single-Cell Data Integration},
+  author={Mehmet Burak Koca, Fatih Erdoğan Sevilgen},
   journal={bioRxiv},
   year={2024},
   doi={10.1101/2024.12.06.627151}
@@ -146,4 +130,4 @@ If you use SCPRO-VI in your research, please cite:
 
 ## 📮 Contact
 
-For questions or collaboration, feel free to contact **[Your Name]** at `your_email@domain.com`.
+For questions or collaboration, feel free to contact with me at `b.koca@gtu.edu.tr`.

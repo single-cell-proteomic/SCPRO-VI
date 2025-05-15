@@ -74,7 +74,7 @@ args = Namespace(
     num_neighbors=[15],
     num_epochs=20,
     num_hvgs=1000,
-    pretrained=False,
+    pretrained=True,
     use_embeddings=True
 )
 
